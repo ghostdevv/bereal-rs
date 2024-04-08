@@ -1,6 +1,6 @@
 [package]
 name = "bereal"
-version = "0.1.1"
+version = "0.2.0"
 description = "A library that wraps the bereal.devin.fun API for getting bereal moment data"
 authors = ["Willow GHOST <ghostdevbusiness@gmail.com> (willow.sh)"]
 repository = "https://github.com/ghostdevv/bereal-rs"
