@@ -5,7 +5,12 @@ use color_eyre::eyre::{eyre, Result};
 #[derive(Parser, Debug)]
 #[command(version, about, author)]
 struct Cli {
-    #[arg(long, short = 'k', help = "Your bereal.devin.fun api key")]
+    #[arg(
+        long,
+        short = 'k',
+        env = "DEVIN_BEREAL_KEY",
+        help = "Your bereal.devin.fun api key"
+    )]
     api_key: String,
 
     #[command(subcommand)]
