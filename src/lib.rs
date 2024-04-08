@@ -4,42 +4,42 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize)]
 pub struct Time {
-    ts: i64,
-    utc: String,
+    pub ts: i64,
+    pub utc: String,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct Moment {
-    id: String,
-    ts: i64,
-    utc: String,
+    pub id: String,
+    pub ts: i64,
+    pub utc: String,
 }
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "snake_case")]
 pub struct Regions<T> {
     #[serde(rename = "us-central")]
-    us_central: T,
+    pub us_central: T,
 
     #[serde(rename = "europe-west")]
-    europe_west: T,
+    pub europe_west: T,
 
     #[serde(rename = "asia-west")]
-    asia_west: T,
+    pub asia_west: T,
 
     #[serde(rename = "asia-east")]
-    asia_east: T,
+    pub asia_east: T,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct LatestMoments {
-    regions: Regions<Moment>,
-    now: Time,
+    pub regions: Regions<Moment>,
+    pub now: Time,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct AllMoments {
-    regions: Regions<Vec<Moment>>,
+    pub regions: Regions<Vec<Moment>>,
 }
 
 pub struct BerealClient {
@@ -81,26 +81,26 @@ impl Region {
 
 #[derive(Debug, Deserialize)]
 pub struct LookupResultTimeUTC {
-    unix: i64,
-    timestamp: String,
+    pub unix: i64,
+    pub timestamp: String,
 }
 
 // #[derive(Debug, Deserialize)]
 // pub struct LookupResultTimeLocalized {
-//     // timezone: String,
-//     timestamp: String,
+//     // pub timezone: String,
+//     pub timestamp: String,
 // }
 
 #[derive(Debug, Deserialize)]
 pub struct LookupResult {
-    region: Region,
+    pub region: Region,
 
-    id: String,
+    pub id: String,
 
     #[serde(rename = "UTC")]
-    utc: LookupResultTimeUTC,
+    pub utc: LookupResultTimeUTC,
     // todo this seems broken in api
-    // localized: LookupResultTimeLocalized,
+    // pub localized: LookupResultTimeLocalized,
 }
 
 impl BerealClient {
