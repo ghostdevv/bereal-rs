@@ -1,3 +1,7 @@
+# v0.3.0
+
+-   feat(cli): support reading api key from `DEVIN_BEREAL_KEY` env var
+
 # v0.2.0
 
 -   feat: initial cli
