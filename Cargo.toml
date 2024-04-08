@@ -6,16 +6,19 @@ authors = ["Willow GHOST <ghostdevbusiness@gmail.com> (willow.sh)"]
 repository = "https://github.com/ghostdevv/bereal-rs"
 license = "MIT"
 edition = "2021"
+resolver = "2"
 
 [dependencies]
+chrono = { version = "0.4.37", optional = true }
 clap = { version = "4.5.4", features = ["derive"], optional = true }
+color-eyre = { version = "0.6.3", optional = true }
 reqwest = { version = "0.12.3", features = ["json"] }
 serde = { version = "1.0.197", features = ["derive"] }
 serde_json = "1.0.115"
 tokio = { version = "1.37.0", features = ["full"] }
 
 [features]
-cli = ["clap"]
+cli = ["dep:clap", "dep:color-eyre", "dep:chrono"]
 
 [lib]
 path = "src/lib.rs"
