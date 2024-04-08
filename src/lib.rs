@@ -1,3 +1,5 @@
+// todo add doc comments
+
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -14,28 +16,39 @@ pub struct Moment {
 }
 
 #[derive(Deserialize, Debug)]
-pub struct RegionsMoments {
+pub struct Regions<T> {
     #[serde(rename = "us-central")]
-    us_central: Moment,
+    us_central: T,
 
     #[serde(rename = "europe-west")]
-    europe_west: Moment,
+    europe_west: T,
 
     #[serde(rename = "asia-west")]
-    asia_west: Moment,
+    asia_west: T,
 
     #[serde(rename = "asia-east")]
-    asia_east: Moment,
+    asia_east: T,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct LatestMoments {
-    regions: RegionsMoments,
+    regions: Regions<Moment>,
     now: Time,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct AllMoments {
+    regions: Regions<Vec<Moment>>,
 }
 
 pub struct BerealClient {
     api_key: String,
+}
+
+pub enum Limit {
+    Count(i16),
+    Default,
+    All,
 }
 
 impl BerealClient {
@@ -46,15 +59,29 @@ impl BerealClient {
     }
 
     pub async fn latest_moments(&self) -> Result<LatestMoments, reqwest::Error> {
-        let latest_moments = reqwest::Client::new()
+        reqwest::Client::new()
             .get("https://bereal.devin.rest/v1/moments/latest")
             .query(&[("api_key", &self.api_key)])
             .send()
             .await?
             .json::<LatestMoments>()
-            .await?;
+            .await
+    }
 
-        Ok(latest_moments)
+    pub async fn all_moments(&self, limit: Limit) -> Result<AllMoments, reqwest::Error> {
+        let limit_param = match limit {
+            Limit::Count(num) => num.to_string(),
+            Limit::All => String::from("NONE"),
+            Limit::Default => String::from("90"),
+        };
+
+        reqwest::Client::new()
+            .get("https://bereal.devin.rest/v1/moments/all")
+            .query(&[("api_key", &self.api_key), ("limit", &limit_param)])
+            .send()
+            .await?
+            .json::<AllMoments>()
+            .await
     }
 }
 
@@ -75,5 +102,45 @@ mod tests {
         if let Err(e) = create_client().latest_moments().await {
             panic!("{:?}", e);
         }
+    }
+
+    #[tokio::test]
+    async fn all_moments() {
+        match create_client().all_moments(Limit::Count(1)).await {
+            Err(e) => panic!("{:?}", e),
+            Ok(moments) => {
+                if moments.regions.europe_west.len() != 1 {
+                    panic!("Limit did not apply correctly")
+                }
+            }
+        };
+    }
+
+    #[tokio::test]
+    async fn all_moments_limit_default() {
+        match create_client().all_moments(Limit::Default).await {
+            Err(e) => panic!("{:?}", e),
+            Ok(moments) => {
+                let count = moments.regions.europe_west.len();
+
+                if count != 90 {
+                    panic!("Limit did not apply correctly, found a count of {}", count)
+                }
+            }
+        };
+    }
+
+    #[tokio::test]
+    async fn all_moments_limit_all() {
+        match create_client().all_moments(Limit::All).await {
+            Err(e) => panic!("{:?}", e),
+            Ok(moments) => {
+                let count = moments.regions.europe_west.len();
+
+                if count <= 90 {
+                    panic!("Limit did not apply correctly, found a count of {}", count)
+                }
+            }
+        };
     }
 }
