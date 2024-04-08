@@ -1,12 +1,16 @@
 [package]
 name = "bereal"
 version = "0.1.0"
+description = "A library that wraps the bereal.devin.fun API for getting bereal moment data"
+authors = ["Willow GHOST <ghostdevbusiness@gmail.com> (willow.sh)"]
+license = "MIT"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 reqwest = { version = "0.12.3", features = ["json"] }
 serde = { version = "1.0.197", features = ["derive"] }
 serde_json = "1.0.115"
 tokio = { version = "1.37.0", features = ["full"] }
+
+[lib]
+path = "src/lib.rs"
