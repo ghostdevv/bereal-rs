@@ -2,7 +2,7 @@ use crate::{BerealClient, Limit, Region};
 use std::env;
 
 fn create_client() -> BerealClient {
-    match env::var("BR_API_KEY") {
+    match env::var("DEVIN_BEREAL_KEY") {
         Err(_) => panic!("Missing BR_API_KEY environment variable"),
         Ok(key) => BerealClient::new(&key),
     }
